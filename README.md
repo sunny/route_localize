@@ -6,33 +6,41 @@ and translations in locale files.
 
 ## Warning
 
-This is unstable, totally not production-ready yet. Ye be warned.
+For now this is unstable, with a volatile API, without enough tests,
+totally not production-ready yet. Ye be warned.
 
 
 ## Usage
 
 In your Rails application's `Gemfile` add:
 
-    gem "route_localize", github: "sunny/route_localize"
+```rb
+gem "route_localize", github: "sunny/route_localize"
+```
 
 Install the plugin by running:
 
-    $ bundle
+```sh
+$ bundle
+```
 
 Localize the routes you want by surrounding them with a scope. For example :
 
-    scope localize: [:en, :fr] do
-      get 'trees/new', to: 'trees#new'
-    end
-    
-    root 'pages#index'
+```rb
+scope localize: [:en, :fr] do
+  get 'trees/new', to: 'trees#new'
+end
+root 'pages#index'
+```
 
 In a `config/locales/routes.yml`, add:
 
-      fr:
-        routes:
-          trees: arbres
-          new: nouveau
+```yml
+fr:
+  routes:
+    trees: arbres
+    new: nouveau
+```
 
 Now you will have the following routes defined:
 
@@ -49,16 +57,20 @@ that use `trees_new_en` or `trees_new_fr` depending on the current locale.
 If you want to be able to switch to the current page in another language
 add the following inside your `app/helpers/application_helper.rb`:
 
-    module ApplicationHelper
-      include RouteLocalizeHelper
-    end
+```rb
+module ApplicationHelper
+  include RouteLocalizeHelper
+end
+```
 
 You can then use the `locale_switch_url` helper in your views:
 
-    <%= link_to "fr", locale_switch_url("fr") %>
-    <%= link_to "en", locale_switch_url("en") %>
+```erb
+<%= link_to "fr", locale_switch_url("fr") %>
+<%= link_to "en", locale_switch_url("en") %>
+```
 
-### Hijack the `:id` parameter
+### Localize the `:id` parameter in your switcher
 
 If your `:id` param is different depending on the language, you can override
 it by creating a `localize_param` method.
@@ -71,23 +83,26 @@ The `localize_param` needs to exist in your views and takes the locale as a para
 
 For example if your controller did this:
 
-    class ProductsController < ApplicationController
-      def show
-        if I18n.locale = "fr"
-          @tree = Product.find_by_name_fr(params[:id])
-        else
-          @tree = Product.find_by_name_en(params[:id])
-        end
-      end
+```rb
+class ProductsController < ApplicationController
+  def show
+    if I18n.locale = "fr"
+      @tree = Product.find_by_name_fr(params[:id])
+    else
+      @tree = Product.find_by_name_en(params[:id])
     end
+  end
+end
+```
 
 Then you would need to add this inside your controller:
 
-      helper_method :localize_param
-      def localize_param(locale)
-        locale == "fr" ? @tree.name_fr : @tree.name_en
-      end
-
+```
+  helper_method :localize_param
+  def localize_param(locale)
+    locale == "fr" ? @tree.name_fr : @tree.name_en
+  end
+```
 
 
 ## Other good gems
