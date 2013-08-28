@@ -123,6 +123,5 @@ Route Localize is different because it:
 
 - adds a constraint to the subdomain instead of relying on the URL beeing in the url (`en/…` `fr/`)
 - plays well with gems that introduce locales and routes you don't want to translate (like `active_admin`)
-- includes a language switcher that lets you translate parameters in the url,
-  for example if you also want to translate the article title in `/articles/1-hello-world`.
+- includes a powerfull language switcher helper.
 
