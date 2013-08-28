@@ -1,13 +1,13 @@
-# RouteLocalize
+# Route Localize
 
-Rails plugin to be able to translate routes using a different subdomain per locale
-and translations in locale files.
-
+Rails plugin that lets you translate routes by using a different subdomain per locale.
 
 ## Warning
 
 For now this is unstable, with a volatile API, without enough tests,
-totally not production-ready yet. Ye be warned.
+totally not production-ready yet.
+
+Ye be warned.
 
 
 ## Usage
@@ -24,7 +24,7 @@ Install the plugin by running:
 $ bundle
 ```
 
-Localize the routes you want by surrounding them with a scope. For example :
+In your `config/routes.rb`, localize the routes you want by surrounding them with a scope. For example:
 
 ```rb
 scope localize: [:en, :fr] do
@@ -33,7 +33,13 @@ end
 root 'pages#index'
 ```
 
-In a `config/locales/routes.yml`, add:
+You may also specify the locales directly on the route:
+
+```rb
+get 'trees/new', localize: [:en, :fr]
+```
+
+Add translations for the route parts you want to change under the `routes` key, for example in `config/locales/routes.yml` or `config/locales/fr.yml`:
 
 ```yml
 fr:
@@ -48,7 +54,7 @@ Now you will have the following routes defined:
       trees_new_en GET /trees/new(.:format)      trees#new {:subdomain=>:en}
       trees_new_fr GET /arbres/nouveau(.:format) trees#new {:subdomain=>:fr}
 
-You will also have the helpers `trees_new_path` and `trees_new_url` available
+You will also have the `trees_new_path` and `trees_new_url` helpers available
 that use `trees_new_en` or `trees_new_fr` depending on the current locale.
 
 
@@ -105,18 +111,18 @@ Then you would need to add this inside your controller:
 ```
 
 
-## Other good gems
+## Other gems to translate Rails routes
 
-Before builind this I considered using the following gems :
+The following gems could be a good match for your project:
 
 - [translate_routes](https://github.com/raul/translate_routes)
 - [route_translator](https://github.com/enriclluelles/route_translator/)
 - [rails-translate-routes](https://github.com/francesc/rails-translate-routes/)
 
-All three rely on the locale beeing in the url (`en/…` `fr/`), don't add constraints to the subdomain.
+Route Localize is different because it:
 
-These gems didn't seem to play with gems like `active_admin` that introduce a lot of new locales or whose routes
-you don't want to translate.
+- adds a constraint to the subdomain instead of relying on the URL beeing in the url (`en/…` `fr/`)
+- plays well with gems that introduce locales and routes you don't want to translate (like `active_admin`)
+- includes a language switcher that lets you translate parameters in the url,
+  for example if you also want to translate the article title in `/articles/1-hello-world`.
 
-None had a language switcher that lets you go translate parameters in the url, for example when
-you want to translate the article title in `/articles/1-hello-world`.
