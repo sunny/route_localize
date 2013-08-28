@@ -10,7 +10,7 @@ totally not production-ready yet.
 Ye be warned.
 
 
-## Usage
+## Install
 
 In your Rails application's `Gemfile` add:
 
@@ -23,6 +23,8 @@ Install the plugin by running:
 ```sh
 $ bundle
 ```
+
+## Usage
 
 In your `config/routes.rb`, localize the routes you want by surrounding them with a scope. For example:
 
@@ -39,7 +41,8 @@ You may also specify the locales directly on the route:
 get 'trees/new', localize: [:en, :fr]
 ```
 
-Add translations for the route parts you want to change under the `routes` key, for example in `config/locales/routes.yml` or `config/locales/fr.yml`:
+Add translations for the route parts you want to change under the `routes` key,
+for example in `config/locales/routes.yml` or `config/locales/fr.yml`:
 
 ```yml
 fr:
@@ -48,14 +51,14 @@ fr:
     new: nouveau
 ```
 
-Now you will have the following routes defined:
+With this example you would have the following routes defined:
 
             Prefix Verb URI Pattern               Controller#Action
       trees_new_en GET /trees/new(.:format)      trees#new {:subdomain=>:en}
       trees_new_fr GET /arbres/nouveau(.:format) trees#new {:subdomain=>:fr}
 
-You will also have the `trees_new_path` and `trees_new_url` helpers available
-that use `trees_new_en` or `trees_new_fr` depending on the current locale.
+You also get the `trees_new_path` and `trees_new_url` helpers that fallback to
+`trees_new_en` or `trees_new_fr` depending on the current locale.
 
 
 ## Language switcher
