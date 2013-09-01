@@ -2,4 +2,6 @@ fr:
   routes:
     home: accueil
     trees: arbres
-    new: nouveau
+
+    plant: planter
+    edit: éditer
