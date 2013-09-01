@@ -9,11 +9,11 @@ Gem::Specification.new do |s|
   s.version     = RouteLocalize::VERSION
   s.authors     = ["Sunny Ripert"]
   s.email       = ["sunny@sunfox.org"]
-  s.homepage    = "http://github.com/sunny"
-  s.summary     = "RouteLocalize to be able to translate routes using locale files and subdomains."
-  s.description = "RouteLocalize to be able to translate routes using locale files and subdomains."
+  s.homepage    = "http://github.com/sunny/route_localize"
+  s.summary     = "Rails 4 engine to translate routes."
+  s.description = "Rails 4 engine to to translate routes using locale files and subdomains."
 
-  s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.files = Dir["{app,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency "rails", "~> 4.0.0"

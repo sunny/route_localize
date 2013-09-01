@@ -1,13 +1,13 @@
 # Route Localize
 
-Rails plugin that lets you translate routes by using a different subdomain per locale.
+Rails 4 engine Rails 4 engine to to translate routes using locale files and subdomains.
 
 ## Warning
 
-For now this is unstable, with a volatile API, without enough tests,
-totally not production-ready yet.
+Here be dragons.
 
-Ye be warned.
+For now this is unstable, with a volatile API, without enough tests,
+totally not production-ready yet, version `0.0.1`.
 
 
 ## Install
