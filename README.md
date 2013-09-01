@@ -2,14 +2,6 @@
 
 Rails 4 engine to translate routes using locale files and subdomains.
 
-## Warning
-
-Here be dragons.
-
-For now this is unstable, with a volatile API, without enough tests,
-totally not production-ready yet, version `0.0.1`.
-
-
 ## Install
 
 In your Rails application's `Gemfile` add:
