@@ -49,7 +49,7 @@ module RouteLocalize
   # Translate part of a path
   def translate_segment(segment, locale)
     if segment =~ /^[a-z_0-9]+$/i
-      translation = I18n.t segment, default: segment, locale: locale, scope: "routes"
+      translation = I18n.t "routes.#{segment}", default: segment, locale: locale
       CGI.escape(translation)
     else
       segment
