@@ -35,14 +35,8 @@ end
 root 'pages#index'
 ```
 
-You may also specify the locales directly on the route:
-
-```rb
-get 'trees/new', localize: [:en, :fr]
-```
-
-Add translations for the route parts you want to change under the `routes` key,
-for example in `config/locales/routes.yml` or `config/locales/fr.yml`:
+Add translations in your locales under the `routes` key, with a translation for each route part.
+For example in `config/locales/routes.yml` or `config/locales/fr.yml`:
 
 ```yml
 fr:
