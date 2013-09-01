@@ -41,20 +41,20 @@ module RouteLocalize
     if defaults[:localize]
       locales = defaults.delete(:localize)
       locales.each do |locale|
-        # Subdomain
-        locale_requirements = requirements.merge({ subdomain: locale })
-
         # Name
-        locale_as = "#{as}_#{locale}".to_sym
-        locale_as = nil if route_set.named_routes.routes[locale_as]
+        locale_as = "#{as}_#{locale}"
+        locale_as = nil if route_set.named_routes.routes[locale_as.to_sym]
 
         # Path
         locale_conditions = conditions.dup
         locale_conditions[:path_info] = translate_path(locale_conditions[:path_info], locale)
-        #locale_conditions[:required_defaults] -= :localize
+        locale_conditions[:subdomain] = locale.to_s
+        locale_conditions[:required_defaults] = locale_conditions[:required_defaults].reject { |l| l == :localize }
 
-        # p [locale_as, locale_conditions]
-        yield app, locale_conditions, locale_requirements, defaults, locale_as, anchor
+        # Other arguments
+        locale_defaults = defaults.merge(subdomain: locale.to_s)
+
+        yield app, locale_conditions, requirements, locale_defaults, locale_as, anchor
       end
 
       define_locale_helpers(as, route_set.named_routes.module)
