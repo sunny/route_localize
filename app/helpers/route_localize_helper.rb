@@ -9,11 +9,24 @@ module RouteLocalizeHelper
     method = "#{name}_url" unless respond_to?(method)
     method = "root_url" unless respond_to?(method)
 
+    options = { subdomain: locale }
+
+    # Allow the app to redefine the id parameter with a custom
+    # `localize_param` method
     if params[:id] and respond_to?(:localize_param)
-      send(method, subdomain: locale, id: localize_param(locale))
-    else
-      send(method, subdomain: locale)
+      options[:id] = localize_param(locale)
     end
+
+    route = send(method, options)
+
+    # Ensure the locale switcher only goes to GET routes
+    begin
+      Rails.application.routes.recognize_path(route, method: :get)
+    rescue ActionController::RoutingError
+      route = root_url
+    end
+
+    route
   end
 
   private
