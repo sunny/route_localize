@@ -1,6 +1,6 @@
 # Route Localize
 
-Rails 4 engine Rails 4 engine to to translate routes using locale files and subdomains.
+Rails 4 engine to translate routes using locale files and subdomains.
 
 ## Warning
 
