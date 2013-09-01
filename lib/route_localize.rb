@@ -4,41 +4,14 @@ require "route_localize/extensions"
 module RouteLocalize
   extend self
 
-  # Create _path and _url helpers for the given path name
-  # that uses I18n.locale to pick the current path
-  def define_locale_helpers(name, helper)
-    %w(url path).each do |method|
-      helper.send :define_method, "#{name}_#{method}" do |*args|
-        ret = send("#{name}_#{I18n.locale}_#{method}", *args)
-        Rails.logger.info "#{name}_#{method} => #{name}_#{I18n.locale}_#{method} => #{ret}"
-        ret
-      end
-    end
-  end
-
-  # Translate part of a path
-  def translate_segment(segment, locale)
-    if segment =~ /^[a-z_]+$/
-      translation = I18n.t segment, default: segment, locale: locale, scope: "routes"
-      CGI.escape(translation)
-    else
-      segment
-    end
-  end
-
-  # Translate a route's path
-  def translate_path(path, locale)
-    path = path.dup
-    final_optional_segments = path.slice!(/(\(.+\))$/)
-    segments = path.split('/').map do |segment|
-      translate_segment(segment, locale)
-    end
-    "#{segments.join('/')}#{final_optional_segments}"
-  end
-
   # Yields one or several routes if the route definition has a `localize:` scope
   def translate_route(app, conditions, requirements, defaults, as, anchor, route_set)
+
     if defaults[:localize]
+      # Makes sure the routes aren't loaded before i18n can read translations
+      # This happens when gems like `activeadmin` call `Rails.application.reload_routes!`
+      return unless I18n.load_path.grep(/routes.yml$/).any?
+
       locales = defaults.delete(:localize)
       locales.each do |locale|
         # Name
@@ -62,4 +35,35 @@ module RouteLocalize
       yield app, conditions, requirements, defaults, as, anchor
     end
   end
+
+  # Create _path and _url helpers for the given path name
+  # that uses I18n.locale to pick the current path
+  def define_locale_helpers(name, helper)
+    %w(url path).each do |method|
+      helper.send :define_method, "#{name}_#{method}" do |*args|
+        send("#{name}_#{I18n.locale}_#{method}", *args)
+      end
+    end
+  end
+
+  # Translate part of a path
+  def translate_segment(segment, locale)
+    if segment =~ /^[a-z_0-9]+$/i
+      translation = I18n.t segment, default: segment, locale: locale, scope: "routes"
+      CGI.escape(translation)
+    else
+      segment
+    end
+  end
+
+  # Translate a path
+  def translate_path(path, locale)
+    path = path.dup
+    final_options = path.slice!(/(\(.+\))$/) # Removes "(.:format)"
+    segments = path.split('/').map do |segment|
+      translate_segment(segment, locale)
+    end
+    "#{segments.join('/')}#{final_options}"
+  end
+
 end

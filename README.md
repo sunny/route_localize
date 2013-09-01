@@ -35,8 +35,7 @@ end
 root 'pages#index'
 ```
 
-Add translations in your locales under the `routes` key, with a translation for each route part.
-For example in `config/locales/routes.yml` or `config/locales/fr.yml`:
+Create a `config/locales/routes.yml` with translations for each part of your routes under the `routes` key. For example:
 
 ```yml
 fr:
@@ -51,7 +50,7 @@ With this example you would have the following routes defined:
       trees_new_en GET /trees/new(.:format)      trees#new {:subdomain=>:en}
       trees_new_fr GET /arbres/nouveau(.:format) trees#new {:subdomain=>:fr}
 
-You also get the `trees_new_path` and `trees_new_url` helpers that fallback to
+You also get the `trees_new_path` and `trees_new_url` helpers that will call
 `trees_new_en` or `trees_new_fr` depending on the current locale.
 
 
@@ -76,13 +75,11 @@ You can then use the `locale_switch_url` helper in your views:
 ### Localize the `:id` parameter in your switcher
 
 If your `:id` param is different depending on the language, you can override
-it by creating a `localize_param` method.
+it by creating a `localize_param` method that takes the locale as a parameter.
 
 This is usefull in case you would like your language switcher on
 `http://en.example.org/products/keyboard` to switch to `http://fr.example.org/produits/clavier`,
 where `keyboard` and `clavier` are your `:id` parameters.
-
-The `localize_param` needs to exist in your views and takes the locale as a parameter.
 
 For example if your controller did this:
 
@@ -115,10 +112,11 @@ The following gems could be a good match for your project:
 - [translate_routes](https://github.com/raul/translate_routes)
 - [route_translator](https://github.com/enriclluelles/route_translator/)
 - [rails-translate-routes](https://github.com/francesc/rails-translate-routes/)
+- [routing-filter](https://github.com/svenfuchs/routing-filter)
 
 Route Localize is different because it:
 
-- adds a constraint to the subdomain instead of relying on the URL beeing in the url (`en/…` `fr/`)
-- plays well with gems that introduce locales and routes you don't want to translate (like `active_admin`)
+- adds a constraint to the subdomain instead of relying on the locale beeing in the url (`en/…` `fr/`)
+- plays well with gems that introduce extra locales, routes you don't want to translate, or reload routes before i18n is loaded (`activeadmin` for example)
 - includes a powerfull language switcher helper.
 

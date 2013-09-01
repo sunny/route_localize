@@ -1,3 +1,7 @@
+en:
+  routes:
+    plant: planting
+
 fr:
   routes:
     home: accueil
