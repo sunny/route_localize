@@ -24,7 +24,7 @@ class RoutesTest < ActionDispatch::IntegrationTest
   test "generates named paths for each locale" do
     # en
     assert_equal "/home", home_en_path
-    assert_equal "/trees/plant", new_tree_en_path
+    assert_equal "/trees/planting", new_tree_en_path
     assert_equal "/trees/42", tree_en_path(42)
     assert_equal "/trees/42/edit", edit_tree_en_path(42)
     assert_equal "/default", default_fr_path
@@ -40,7 +40,7 @@ class RoutesTest < ActionDispatch::IntegrationTest
   test "generates generic named paths that depend on the current locale" do
     I18n.locale = :en
     assert_equal "/home", home_path
-    assert_equal "/trees/plant", new_tree_path
+    assert_equal "/trees/planting", new_tree_path
     assert_equal "/trees/42", tree_path(42)
     assert_equal "http://en.example.com/trees/42", url_for(FakeTree.new(42))
     assert_equal "/default", default_path

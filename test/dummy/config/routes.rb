@@ -4,8 +4,8 @@ Dummy::Application.routes.draw do
   scope localize: [:en, :fr] do
     resources :trees, path_names: { new: "plant" }
 
-    get 'default', to: 'trees#home'
+    get "default", to: "trees#home"
   end
 
-  root 'trees#index'
+  root "trees#index"
 end
