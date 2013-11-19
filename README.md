@@ -97,9 +97,16 @@ Then you would need to add this inside your controller:
   end
 ```
 
+
 ## Caveats
 
 - Tests are missing for the `locale_switch_url`.
+
+
+## Development
+
+Please help by [submitting issues](https://github.com/sunny/route_localize),
+creating pull requests, talking about the gem or saying thanks.
 
 
 ## Other gems to translate Rails routes
