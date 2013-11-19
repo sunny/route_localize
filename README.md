@@ -64,16 +64,17 @@ You can then use the `locale_switch_url` helper in your views:
 <%= link_to "en", locale_switch_url("en") %>
 ```
 
-### Localize the `:id` parameter in your switcher
+### Change the parameters in your switcher
 
-If your `:id` param is different depending on the language, you can override
-it by creating a `localize_param` method that takes the locale as a parameter.
+If your params are different depending on the language, you can override
+the switcher's params by creating a `route_localize_options` method that
+takes the locale as a parameter.
 
-This is usefull in case you would like your language switcher on
-`http://en.example.org/products/keyboard` to switch to `http://fr.example.org/produits/clavier`,
-where `keyboard` and `clavier` are your `:id` parameters.
+For example if you would like to switch `http://en.example.org/products/keyboard`
+to `http://fr.example.org/produits/clavier`, where `keyboard` and `clavier`
+are the `:id` parameter.
 
-For example if your controller did this:
+In this case you might already have this in controller:
 
 ```rb
 class ProductsController < ApplicationController
@@ -90,11 +91,15 @@ end
 Then you would need to add this inside your controller:
 
 ```
-  helper_method :localize_param
-  def localize_param(locale)
-    locale == "fr" ? @tree.name_fr : @tree.name_en
+  helper_method :route_localize_path_options
+  def route_localize_path_options(locale)
+    { id: (locale == "fr" ? @tree.name_fr : @tree.name_en) }
   end
 ```
+
+## Caveats
+
+- Tests are missing for the `locale_switch_url`.
 
 
 ## Other gems to translate Rails routes
