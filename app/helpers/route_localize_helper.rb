@@ -10,7 +10,7 @@ module RouteLocalizeHelper
     method = "root_url" unless respond_to?(method)
 
     options = { subdomain: locale }
-    options.merge! route_localize_options(locale)
+    options.merge! route_localize_options(locale).to_h
     route = send(method, options)
 
     # Ensure the locale switcher only goes to GET routes
