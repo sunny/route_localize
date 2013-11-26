@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.homepage    = "http://github.com/sunny/route_localize"
   s.summary     = "Rails 4 engine to translate routes."
   s.description = "Rails 4 engine to to translate routes using locale files and subdomains."
+  s.license     = 'MIT'
 
   s.files = Dir["{app,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
