@@ -2,21 +2,7 @@
 require 'test_helper'
 
 class RoutesTest < ActionDispatch::IntegrationTest
-  fixtures :all
-
-  # Mock object that acts like a routeable ActiveRecord model
-  class FakeTree
-    attr_reader :to_param
-    def initialize(to_param)
-      @to_param = to_param
-    end
-    def self.model_name
-      self
-    end
-    def self.singular_route_key
-      "tree"
-    end
-  end
+  # fixtures :all
 
   include ActionDispatch::Routing::UrlFor
   include Rails.application.routes.url_helpers
@@ -42,14 +28,16 @@ class RoutesTest < ActionDispatch::IntegrationTest
     assert_equal "/home", home_path
     assert_equal "/trees/planting", new_tree_path
     assert_equal "/trees/42", tree_path(42)
-    assert_equal "http://en.example.com/trees/42", url_for(FakeTree.new(42))
+    assert_equal "/trees/42/edit", edit_tree_path(42)
+    assert_equal "http://en.example.com/trees/42", url_for(Tree.new(id: 42))
     assert_equal "/default", default_path
 
     I18n.locale = :fr
     assert_equal "/accueil", home_path
     assert_equal "/arbres/planter", new_tree_path
     assert_equal "/arbres/42", tree_path(42)
-    assert_equal "http://fr.example.com/arbres/42", url_for(FakeTree.new(42))
+    assert_equal "/arbres/42/%C3%A9diter", edit_tree_path(42)
+    assert_equal "http://fr.example.com/arbres/42", url_for(Tree.new(id: 42))
     assert_equal "/default", default_path
   end
 
@@ -60,14 +48,15 @@ class RoutesTest < ActionDispatch::IntegrationTest
                    { subdomain: "en" })
 
     # fr
-    assert_recognizes({ controller: "trees", action: "show", subdomain: "fr", id: "42" },
-                      "http://fr.lacolhost.com/arbres/42",
-                      { subdomain: "fr" })
-    # FIXME
-    # Rails always seems to generate /trees/42 instead
+
+    # FIXME : assert_routing points to /trees/42
     # assert_routing("http://fr.lacolhost.com/arbres/42",
     #                { controller: "trees", action: "show", subdomain: "fr", id: "42" },
     #                subdomain: "fr")
+
+    assert_recognizes({ controller: "trees", action: "show", subdomain: "fr", id: "42" },
+                      "http://fr.lacolhost.com/arbres/42",
+                      { subdomain: "fr" })
   end
 
 end
