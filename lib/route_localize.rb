@@ -14,20 +14,7 @@ module RouteLocalize
 
       locales = defaults.delete(:localize)
       locales.each do |locale|
-        # Name
-        locale_as = "#{as}_#{locale}"
-        locale_as = nil if route_set.named_routes.routes[locale_as.to_sym]
-
-        # Path
-        locale_conditions = conditions.dup
-        locale_conditions[:path_info] = translate_path(locale_conditions[:path_info], locale)
-        locale_conditions[:subdomain] = locale.to_s
-        locale_conditions[:required_defaults] = locale_conditions[:required_defaults].reject { |l| l == :localize }
-
-        # Other arguments
-        locale_defaults = defaults.merge(subdomain: locale.to_s)
-
-        yield app, locale_conditions, requirements, locale_defaults, locale_as, anchor
+        yield *route_args_for_locale(locale, app, conditions, requirements, defaults, as, anchor, route_set)
       end
 
       define_locale_helpers(as, route_set.named_routes.module)
@@ -46,16 +33,6 @@ module RouteLocalize
     end
   end
 
-  # Translate part of a path
-  def translate_segment(segment, locale)
-    if segment =~ /^[a-z_0-9]+$/i
-      translation = I18n.t "routes.#{segment}", default: segment, locale: locale
-      CGI.escape(translation)
-    else
-      segment
-    end
-  end
-
   # Translate a path
   def translate_path(path, locale)
     path = path.dup
@@ -66,4 +43,33 @@ module RouteLocalize
     "#{segments.join('/')}#{final_options}"
   end
 
+  # Translate part of a path
+  def translate_segment(segment, locale)
+    if segment =~ /^[a-z_0-9]+$/i
+      translation = I18n.t "routes.#{segment}", default: segment, locale: locale
+      CGI.escape(translation)
+    else
+      segment
+    end
+  end
+
+
+  private
+
+  def route_args_for_locale(locale, app, conditions, requirements, defaults, as, anchor, route_set)
+    # Name
+    locale_as = "#{as}_#{locale}"
+    locale_as = nil if route_set.named_routes.routes[locale_as.to_sym]
+
+    # Path
+    locale_conditions = conditions.dup
+    locale_conditions[:path_info] = translate_path(locale_conditions[:path_info], locale)
+    locale_conditions[:subdomain] = locale.to_s
+    locale_conditions[:required_defaults] = locale_conditions[:required_defaults].reject { |l| l == :localize }
+
+    # Other arguments
+    locale_defaults = defaults.merge(subdomain: locale.to_s)
+
+    [app, locale_conditions, requirements, locale_defaults, locale_as, anchor]
+  end
 end
