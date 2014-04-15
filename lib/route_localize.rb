@@ -21,6 +21,7 @@ module RouteLocalize
     else
       yield app, conditions, requirements, defaults, as, anchor
     end
+
   end
 
   # Create _path and _url helpers for the given path name
