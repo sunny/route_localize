@@ -37,7 +37,10 @@ module RouteLocalize
   # Translate a path
   def translate_path(path, locale)
     path = path.dup
-    final_options = path.slice!(/(\(.+\))$/) # Removes "(.:format)"
+
+    # Remove "(.:format)" in routes or "?args" if used elsewhere
+    final_options = path.slice!(/(\(.+\)|\?.*)$/)
+
     segments = path.split('/').map do |segment|
       translate_segment(segment, locale)
     end

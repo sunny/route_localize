@@ -2,6 +2,7 @@
 
 Rails 4 engine to translate routes using locale files and subdomains.
 
+
 ## Install
 
 In your Rails application's `Gemfile` add:
@@ -15,6 +16,7 @@ Install the plugin by running:
 ```sh
 $ bundle
 ```
+
 
 ## Usage
 
@@ -64,6 +66,7 @@ You can then use the `locale_switch_url` helper in your views:
 <%= link_to "en", locale_switch_url("en") %>
 ```
 
+
 ### Change the parameters in your switcher
 
 If your params are different depending on the language, you can override
@@ -100,7 +103,17 @@ Then you would need to add this inside your controller:
 
 ## Caveats
 
-- Tests are missing for the `locale_switch_url`.
+- Tests are missing for the `locale_switch_url` helper.
+- Rails' `url_for` cannot find the translation, prefer to use the `_path` and
+  `_url` methods instead. If you can't, one way around is  to use
+  `RouteLocalize.translate_path`.
+
+  For example :
+
+  ```ruby
+  url = url_for(controller: 'trees', action: 'index')
+  url = RouteLocalize.translate_path(url, I18n.locale)
+  ```
 
 
 ## Development
