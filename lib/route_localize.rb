@@ -2,7 +2,7 @@ require "route_localize/engine"
 require "route_localize/extensions"
 
 module RouteLocalize
-  extend self
+  module_function
 
   # Yields one or several routes if the route definition has a `localize:` scope
   def translate_route(app, conditions, requirements, defaults, as, anchor, route_set)
@@ -14,7 +14,8 @@ module RouteLocalize
 
       locales = defaults.delete(:localize)
       locales.each do |locale|
-        yield *route_args_for_locale(locale, app, conditions, requirements, defaults, as, anchor, route_set)
+        yield *route_args_for_locale(locale, app, conditions, requirements,
+                                     defaults, as, anchor, route_set)
       end
 
       define_locale_helpers(as, route_set.named_routes.module)
@@ -44,6 +45,7 @@ module RouteLocalize
     segments = path.split('/').map do |segment|
       translate_segment(segment, locale)
     end
+
     "#{segments.join('/')}#{final_options}"
   end
 
