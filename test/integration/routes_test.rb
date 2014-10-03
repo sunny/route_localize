@@ -59,5 +59,18 @@ class RoutesTest < ActionDispatch::IntegrationTest
                       { subdomain: "fr" })
   end
 
+
+  test "generates paths depending on url" do
+    # en
+    assert_routing("http://lacolhost.com/en/leaves/42",
+                   { controller: "leaves", action: "show", locale: "en", id: "42" },
+                   { })
+
+    # fr
+    # FIXME use assert_routing
+    assert_recognizes({ controller: "leaves", action: "show", locale: "fr", id: "42" },
+                      "http://lacolhost.com/fr/feuilles/42",
+                      { })
+  end
 end
 

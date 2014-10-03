@@ -7,12 +7,12 @@ module RouteLocalize
   # Yields one or several routes if the route definition has a `localize:` scope
   def translate_route(app, conditions, requirements, defaults, as, anchor, route_set)
 
-    if defaults[:localize]
+    if defaults[:localize] or defaults[:localize_url]
       # Makes sure the routes aren't loaded before i18n can read translations
       # This happens when gems like `activeadmin` call `Rails.application.reload_routes!`
       return unless I18n.load_path.grep(/routes.yml$/).any?
 
-      locales = defaults.delete(:localize)
+      locales = defaults.delete(:localize) || defaults.delete(:localize_url)
       locales.each do |locale|
         yield *route_args_for_locale(locale, app, conditions, requirements,
                                      defaults, as, anchor, route_set)
@@ -59,23 +59,28 @@ module RouteLocalize
     end
   end
 
-
-  private
-
   def route_args_for_locale(locale, app, conditions, requirements, defaults, as, anchor, route_set)
     # Name
     locale_as = "#{as}_#{locale}"
     locale_as = nil if route_set.named_routes.routes[locale_as.to_sym]
 
-    # Path
-    locale_conditions = conditions.dup
-    locale_conditions[:path_info] = translate_path(locale_conditions[:path_info], locale)
-    locale_conditions[:subdomain] = locale.to_s
-    locale_conditions[:required_defaults] = locale_conditions[:required_defaults].reject { |l| l == :localize }
-
     # Other arguments
-    locale_defaults = defaults.merge(subdomain: locale.to_s)
+    locale_defaults = defaults.dup
+    locale_defaults = locale_defaults.merge(subdomain: locale.to_s) if conditions[:required_defaults].include?(:localize)
+    locale_defaults = locale_defaults.except(:localize, :localize_url)
 
-    [app, locale_conditions, requirements, locale_defaults, locale_as, anchor]
+    # Path
+    conditions = locale_conditions(locale, conditions)
+
+
+    [app, conditions, requirements, locale_defaults, locale_as, anchor]
+  end
+
+  def locale_conditions(locale, conditions)
+    conditions = conditions.dup
+    conditions[:path_info] = translate_path(conditions[:path_info], locale)
+    conditions[:subdomain] = locale.to_s if conditions[:required_defaults].include?(:localize)
+    conditions[:required_defaults] = conditions[:required_defaults] -= [:localize, :localize_url]
+    conditions
   end
 end

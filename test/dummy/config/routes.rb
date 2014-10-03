@@ -7,5 +7,10 @@ Dummy::Application.routes.draw do
     get "default", to: "trees#home"
   end
 
+
+  scope ':locale', localize_url: [:en, :fr] do
+    resources :leaves
+  end
+
   root "trees#index"
 end
