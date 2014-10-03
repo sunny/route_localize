@@ -12,6 +12,7 @@ class RoutesTest < ActionDispatch::IntegrationTest
     assert_equal "/home", home_en_path
     assert_equal "/trees/planting", new_tree_en_path
     assert_equal "/trees/42", tree_en_path(42)
+    # assert_equal "/en/leaves/42", leaf_en_path(42)
     assert_equal "/trees/42/edit", edit_tree_en_path(42)
     assert_equal "/default", default_fr_path
 
@@ -19,6 +20,7 @@ class RoutesTest < ActionDispatch::IntegrationTest
     assert_equal "/accueil", home_fr_path
     assert_equal "/arbres/planter", new_tree_fr_path
     assert_equal "/arbres/42", tree_fr_path(42)
+    # assert_equal "/fr/feuilles/42", leaf_fr_path(42)
     assert_equal "/arbres/42/%C3%A9diter", edit_tree_fr_path(42)
     assert_equal "/default", default_en_path
   end
@@ -29,15 +31,19 @@ class RoutesTest < ActionDispatch::IntegrationTest
     assert_equal "/trees/planting", new_tree_path
     assert_equal "/trees/42", tree_path(42)
     assert_equal "/trees/42/edit", edit_tree_path(42)
+    # assert_equal "/en/leaves/42", leaf_path(42)
     assert_equal "http://en.example.com/trees/42", url_for(Tree.new(id: 42))
+    # assert_equal "http://example.com/en/leaf/42", url_for(Leaf.new(id: 42))
     assert_equal "/default", default_path
 
     I18n.locale = :fr
     assert_equal "/accueil", home_path
     assert_equal "/arbres/planter", new_tree_path
     assert_equal "/arbres/42", tree_path(42)
+    # assert_equal "/fr/feuilles/42", leaf_path(42)
     assert_equal "/arbres/42/%C3%A9diter", edit_tree_path(42)
     assert_equal "http://fr.example.com/arbres/42", url_for(Tree.new(id: 42))
+    # assert_equal "http://example.com/fr/feuilles/42", url_for(Leaf.new(id: 42))
     assert_equal "/default", default_path
   end
 
