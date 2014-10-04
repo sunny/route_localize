@@ -6,7 +6,8 @@ class RouteLocalizeTest < ActiveSupport::TestCase
   end
 
   test "translate_path should not change routes" do
-    assert_equal "/a(:b)", RouteLocalize::Route.new.send(:translate_path, "/a(:b)", "fr")
-    assert_equal "/a?b=c", RouteLocalize::Route.new.send(:translate_path, "/a?b=c", "fr")
+    route = RouteLocalize::Route.new
+    assert_equal "/a(:b)", route.send(:translate_path, "/a(:b)")
+    assert_equal "/a?b=c", route.send(:translate_path, "/a?b=c")
   end
 end

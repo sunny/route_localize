@@ -5,19 +5,27 @@ require "route_localize/route"
 module RouteLocalize
   module_function
 
-  # Yields one or several routes if the route definition has a `localize:` scope
+  # Yields one or several route definitions if the route definition has a
+  # `localize` or `localize_url` scope
+  #
+  # The arguments it accepts are the arguments given to
+  # `ActionDispatch::Routing::RouteSet`'s method `add_route`, with the addition
+  # of the `route_set` argument that should hold the current route set.
+  #
+  # The array it yields are the arguments accepted by `add_route` so that these
+  # can be handed back to Rails to insert the yielded route.
   def translate_route(app, conditions, requirements, defaults, as, anchor, route_set)
     locales = defaults.delete(:localize) || defaults.delete(:localize_url)
     if locales.present?
 
-      # Makes sure the routes aren't loaded before i18n can read translations
-      # This happens when gems like `activeadmin` call `Rails.application.reload_routes!`
+      # Makes sure the routes aren't created before i18n can read translations
+      # This happens when gems like activeadmin call `Rails.application.reload_routes!`
       return unless I18n.load_path.grep(/routes.yml$/).any?
 
       locales.each do |locale|
-        route = Route.new(locale, app, conditions, requirements, defaults,
-                            as, anchor, route_set)
-        yield *route.route_args
+        route = Route.new(app, conditions, requirements, defaults,
+                            as, anchor, route_set, locale)
+        yield *route.to_add_route_arguments
       end
 
       define_locale_helpers(as, route_set.named_routes.module)
