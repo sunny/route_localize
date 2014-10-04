@@ -26,7 +26,7 @@ module RouteLocalize
     def locale_conditions
       cond = conditions.dup
 
-      cond[:path_info] = translate_path(cond[:path_info])
+      cond[:path_info] = translated_path
 
       if by_subdomain?
         cond[:subdomain] = locale.to_s
@@ -34,8 +34,8 @@ module RouteLocalize
         cond[:locale] = locale.to_s
       end
 
-      # TODO: remove if found to be unnecessary after all
-      # cond[:required_defaults] -= [:localize, :localize_url]
+      # For good measure
+      cond[:required_defaults] -= [:localize, :localize_url]
 
       cond
     end
@@ -59,8 +59,8 @@ module RouteLocalize
 
     # Returns a translated path
     # Example: "/trees/:id(.:format)" -> "/arbres/:id(.:format)", …
-    def translate_path(path)
-      path = path.dup
+    def translated_path
+      path = conditions[:path_info].dup
 
       # Remove "(.:format)" in routes or "?args" if used elsewhere
       final_options = path.slice!(/(\(.+\)|\?.*)$/)

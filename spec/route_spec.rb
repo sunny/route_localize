@@ -10,10 +10,14 @@ describe RouteLocalize::Route do
   pending '#to_add_route_arguments'
 
   describe "private #translate_path" do
-    it "should not modify untranslatable routes" do
-      route.conditions = { required_defaults: [:localize] }
-      expect(route.send(:translate_path, "/a(:b)")).to eq("/a(:b)")
-      expect(route.send(:translate_path, "/a?b=c")).to eq("/a?b=c")
+    it "should not modify optional routes" do
+      route.conditions = { required_defaults: [:localize], path_info: "/a(:b)" }
+      expect(route.send(:translated_path)).to eq("/a(:b)")
+    end
+
+    it "should not modify route params"
+      route.conditions = { required_defaults: [:localize], path_info: "/a?b=c" }
+      expect(route.send(:translated_path)).to eq("/a?b=c")
     end
   end
 end

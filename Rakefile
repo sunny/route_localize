@@ -17,8 +17,8 @@ RDoc::Task.new(:rdoc) do |rdoc|
 end
 
 # Dummy app tasks
-# APP_RAKEFILE = File.expand_path("../spec/dummy/Rakefile", __FILE__)
-# load 'rails/tasks/engine.rake'
+APP_RAKEFILE = File.expand_path("../spec/dummy/Rakefile", __FILE__)
+load 'rails/tasks/engine.rake'
 
 # Rspec
 require 'rspec/core/rake_task'
