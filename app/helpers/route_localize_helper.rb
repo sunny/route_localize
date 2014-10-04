@@ -23,6 +23,7 @@ module RouteLocalizeHelper
     route
   end
 
+
   private
 
   def request_route_name
