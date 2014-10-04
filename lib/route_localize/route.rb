@@ -14,6 +14,9 @@ module RouteLocalize
         anchor]
     end
 
+
+    private
+
     def locale_conditions
       cond = conditions.dup
       cond[:path_info] = translate_path(cond[:path_info], locale)
