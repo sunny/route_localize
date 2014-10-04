@@ -45,13 +45,13 @@ describe "Dummy Routes", type: "routing" do
   end
 
   it "generates paths depending on subdomain" do
-    expect(get: "http://en.lacolhost.com/trees/42").to route_to(
+    expect(get: "http://en.example.com/trees/42").to route_to(
       controller: "trees",
       action: "show",
       subdomain: "en",
       id: "42")
 
-    expect(get: "http://fr.lacolhost.com/arbres/42").to route_to(
+    expect(get: "http://fr.example.com/arbres/42").to route_to(
       controller: "trees",
       action: "show",
       subdomain: "fr",
@@ -59,13 +59,13 @@ describe "Dummy Routes", type: "routing" do
   end
 
   it "generates paths depending on url" do
-    expect(get: "http://lacolhost.com/en/leaves/42").to route_to(
+    expect(get: "http://example.com/en/leaves/42").to route_to(
       controller: "leaves",
       action: "show",
       locale: "en",
       id: "42")
 
-    expect(get: "http://lacolhost.com/fr/feuilles/42").to route_to(
+    expect(get: "http://example.com/fr/feuilles/42").to route_to(
       controller: "leaves",
       action: "show",
       locale: "fr",
