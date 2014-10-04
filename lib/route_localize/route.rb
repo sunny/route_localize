@@ -1,9 +1,6 @@
 module RouteLocalize
   Route = Struct.new(:locale, :app, :conditions, :requirements, :defaults,
                         :as, :anchor, :route_set) do
-    # def locales
-    #   defaults.delete(:localize) || defaults.delete(:localize_url)
-    # end
 
     def route_args
       [app,
