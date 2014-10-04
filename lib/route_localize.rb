@@ -1,28 +1,29 @@
 require "route_localize/engine"
 require "route_localize/extensions"
+require "route_localize/route"
 
 module RouteLocalize
   module_function
 
   # Yields one or several routes if the route definition has a `localize:` scope
   def translate_route(app, conditions, requirements, defaults, as, anchor, route_set)
+    locales = defaults.delete(:localize) || defaults.delete(:localize_url)
+    if locales.present?
 
-    if defaults[:localize] or defaults[:localize_url]
       # Makes sure the routes aren't loaded before i18n can read translations
       # This happens when gems like `activeadmin` call `Rails.application.reload_routes!`
       return unless I18n.load_path.grep(/routes.yml$/).any?
 
-      locales = defaults.delete(:localize) || defaults.delete(:localize_url)
       locales.each do |locale|
-        yield *route_args_for_locale(locale, app, conditions, requirements,
-                                     defaults, as, anchor, route_set)
+        route = Route.new(locale, app, conditions, requirements, defaults,
+                            as, anchor, route_set)
+        yield *route.route_args
       end
 
       define_locale_helpers(as, route_set.named_routes.module)
     else
       yield app, conditions, requirements, defaults, as, anchor
     end
-
   end
 
   # Create _path and _url helpers for the given path name
@@ -35,52 +36,4 @@ module RouteLocalize
     end
   end
 
-  # Translate a path
-  def translate_path(path, locale)
-    path = path.dup
-
-    # Remove "(.:format)" in routes or "?args" if used elsewhere
-    final_options = path.slice!(/(\(.+\)|\?.*)$/)
-
-    segments = path.split('/').map do |segment|
-      translate_segment(segment, locale)
-    end
-
-    "#{segments.join('/')}#{final_options}"
-  end
-
-  # Translate part of a path
-  def translate_segment(segment, locale)
-    if segment =~ /^[a-z_0-9]+$/i
-      translation = I18n.t "routes.#{segment}", default: segment, locale: locale
-      CGI.escape(translation)
-    else
-      segment
-    end
-  end
-
-  def route_args_for_locale(locale, app, conditions, requirements, defaults, as, anchor, route_set)
-    # Name
-    locale_as = "#{as}_#{locale}"
-    locale_as = nil if route_set.named_routes.routes[locale_as.to_sym]
-
-    # Other arguments
-    locale_defaults = defaults.dup
-    locale_defaults = locale_defaults.merge(subdomain: locale.to_s) if conditions[:required_defaults].include?(:localize)
-    locale_defaults = locale_defaults.except(:localize, :localize_url)
-
-    # Path
-    conditions = locale_conditions(locale, conditions)
-
-
-    [app, conditions, requirements, locale_defaults, locale_as, anchor]
-  end
-
-  def locale_conditions(locale, conditions)
-    conditions = conditions.dup
-    conditions[:path_info] = translate_path(conditions[:path_info], locale)
-    conditions[:subdomain] = locale.to_s if conditions[:required_defaults].include?(:localize)
-    conditions[:required_defaults] = conditions[:required_defaults] -= [:localize, :localize_url]
-    conditions
-  end
 end
