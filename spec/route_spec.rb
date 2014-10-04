@@ -11,6 +11,7 @@ describe RouteLocalize::Route do
 
   describe "private #translate_path" do
     it "should not modify untranslatable routes" do
+      route.conditions = { required_defaults: [:localize] }
       expect(route.send(:translate_path, "/a(:b)")).to eq("/a(:b)")
       expect(route.send(:translate_path, "/a?b=c")).to eq("/a?b=c")
     end

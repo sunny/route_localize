@@ -8,7 +8,7 @@ Dummy::Application.routes.draw do
   end
 
 
-  scope ':locale', localize_url: [:en, :fr] do
+  scope localize_url: [:en, :fr] do
     resources :leaves
   end
 

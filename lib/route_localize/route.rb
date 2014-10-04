@@ -69,7 +69,10 @@ module RouteLocalize
         translate_segment(segment)
       end
 
-      "#{segments.join('/')}#{final_options}"
+      segments.unshift(":locale") unless by_subdomain?
+      segments = segments.reject(&:blank?)
+
+      "/#{segments.join('/')}#{final_options}"
     end
 
     # Translates part of a path if it can
