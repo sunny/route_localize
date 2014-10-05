@@ -26,7 +26,7 @@ module RouteLocalize
     def locale_conditions
       cond = conditions.dup
 
-      cond[:path_info] = RouteLocalize.translated_path(
+      cond[:path_info] = RouteLocalize.translate_path(
                            conditions[:path_info],
                            locale,
                            by_subdomain: by_subdomain?)

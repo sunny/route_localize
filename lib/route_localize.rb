@@ -47,7 +47,7 @@ module RouteLocalize
 
   # Returns a translated path
   # Example: "/trees/:id(.:format)" -> "/arbres/:id(.:format)", …
-  def translated_path(path, locale, by_subdomain: false)
+  def translate_path(path, locale, by_subdomain: false)
     path = path.dup
 
     # Remove "(.:format)" in routes or "?args" if used elsewhere
