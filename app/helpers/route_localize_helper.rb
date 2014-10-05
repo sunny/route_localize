@@ -4,7 +4,7 @@ module RouteLocalizeHelper
 
   # Returns the URL to the current page in another locale
   def locale_switch_url(locale)
-    route_localize_switch(locale, locale: locale)
+    route_localize_switch(locale)
   end
 
   # Returns the URL to the current page in another locale, using subdomains
@@ -19,6 +19,7 @@ module RouteLocalizeHelper
     name = route_localize_route_name
     method = "#{name}_#{locale}_url"
     method = "#{name}_url" unless respond_to?(method)
+    method = "#{locale}_root_url" unless respond_to?(method)
     method = "root_url" unless respond_to?(method)
 
     options.merge! route_localize_options(locale)

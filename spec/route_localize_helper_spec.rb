@@ -3,9 +3,11 @@ require 'spec_helper'
 describe RouteLocalizeHelper, type: "helper" do
   let(:current_route_name) { "bang" }
   let(:route) { double(:route, name: current_route_name) }
+  let(:root_url) { "http://example.com/" }
 
   before do
     RSpec::Mocks.configuration.verify_partial_doubles = false
+    allow(helper).to receive(:root_url) { root_url }
 
     # Mock routing internals
     allow(Rails.application.routes).to receive(:recognize_path) { nil }
@@ -21,10 +23,10 @@ describe RouteLocalizeHelper, type: "helper" do
     let(:en_root_url) { "http://example.com/en" }
 
     before do
-      allow(helper).to receive(:bang_fr_url).with(locale: :fr) { fr_url }
-      allow(helper).to receive(:bang_en_url).with(locale: :en) { en_url }
-      allow(helper).to receive(:root_url).with(locale: :fr) { fr_root_url }
-      allow(helper).to receive(:root_url).with(locale: :en) { en_root_url }
+      allow(helper).to receive(:bang_fr_url) { fr_url }
+      allow(helper).to receive(:bang_en_url) { en_url }
+      allow(helper).to receive(:fr_root_url) { fr_root_url }
+      allow(helper).to receive(:en_root_url) { en_root_url }
     end
 
     it "finds the locale url by using the localized url helper" do
@@ -35,7 +37,7 @@ describe RouteLocalizeHelper, type: "helper" do
     context "with no current route name" do
       let(:current_route_name) { nil }
 
-      it "defaults to root url" do
+      it "returns the localized root urls" do
         expect(helper.locale_switch_url(:fr)).to eq(fr_root_url)
         expect(helper.locale_switch_url(:en)).to eq(en_root_url)
       end
@@ -47,8 +49,8 @@ describe RouteLocalizeHelper, type: "helper" do
         allow(helper).to receive(:respond_to?).with("bang_fr_url") { false }
       end
 
-      it "falls back to using a normal non-localized url" do
-        allow(helper).to receive(:bang_url).with(locale: :fr) { "foo" }
+      it "returns the non-localized url" do
+        allow(helper).to receive(:bang_url) { "foo" }
         expect(helper.locale_switch_url(:fr)).to eq("foo")
       end
     end
@@ -57,11 +59,26 @@ describe RouteLocalizeHelper, type: "helper" do
       before do
         allow(helper).to receive(:respond_to?).and_call_original
         allow(helper).to receive(:respond_to?).with("bang_fr_url") { false }
+        allow(helper).to receive(:respond_to?).with("bang_en_url") { false }
         allow(helper).to receive(:respond_to?).with("bang_url") { false }
       end
 
-      it "falls back to using the root url" do
+      it "returns localized root urls" do
         expect(helper.locale_switch_url(:fr)).to eq(fr_root_url)
+        expect(helper.locale_switch_url(:en)).to eq(en_root_url)
+      end
+    end
+
+    context "without a localized url, normal url helper or localized routes" do
+      before do
+        allow(helper).to receive(:respond_to?).and_call_original
+        allow(helper).to receive(:respond_to?).with("bang_fr_url") { false }
+        allow(helper).to receive(:respond_to?).with("bang_url") { false }
+        allow(helper).to receive(:respond_to?).with("fr_root_url") { false }
+      end
+
+      it "falls back to using the root url" do
+        expect(helper.locale_switch_url(:fr)).to eq(root_url)
       end
     end
 
@@ -73,8 +90,7 @@ describe RouteLocalizeHelper, type: "helper" do
       end
 
       it "passes extra parameters to the url helper" do
-        allow(helper).to receive(:bang_fr_url)
-          .with(locale: :fr, foo: "bar") { "foobar" }
+        expect(helper).to receive(:bang_fr_url).with(foo: "bar") { "foobar" }
         expect(helper.locale_switch_url(:fr)).to eq("foobar")
       end
     end
@@ -87,7 +103,7 @@ describe RouteLocalizeHelper, type: "helper" do
       end
 
       it "falls back to root_url" do
-        expect(helper.locale_switch_url(:fr)).to eq(fr_root_url)
+        expect(helper.locale_switch_url(:fr)).to eq(root_url)
       end
     end
   end
@@ -110,6 +126,15 @@ describe RouteLocalizeHelper, type: "helper" do
     it "finds the locale url by using the localized url helper" do
       expect(helper.locale_switch_subdomain_url(:fr)).to eq(fr_url)
       expect(helper.locale_switch_subdomain_url(:en)).to eq(en_url)
+    end
+
+    context "with no current route name" do
+      let(:current_route_name) { nil }
+
+      it "defaults to root urls" do
+        expect(helper.locale_switch_subdomain_url(:fr)).to eq(fr_root_url)
+        expect(helper.locale_switch_subdomain_url(:en)).to eq(en_root_url)
+      end
     end
   end
 end
