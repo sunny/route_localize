@@ -2,10 +2,12 @@
 
 module RouteLocalizeHelper
 
+  # Returns the URL to the current page in another locale
   def locale_switch_url(locale)
     route_localize_switch(locale, locale: locale)
   end
 
+  # Returns the URL to the current page in another locale, using subdomains
   def locale_switch_subdomain_url(locale)
     route_localize_switch(locale, subdomain: locale)
   end
@@ -13,8 +15,6 @@ module RouteLocalizeHelper
 
   private
 
-  # URL to another language to switch to.
-  # Can be overridden per-controller.
   def route_localize_switch(locale, options = {})
     name = route_localize_route_name
     method = "#{name}_#{locale}_url"
@@ -46,11 +46,6 @@ module RouteLocalizeHelper
   def route_localize_options(locale)
     if respond_to?(:route_localize_path_options)
       route_localize_path_options(locale).to_h
-
-    # DEPRECATED method that could redefine the id parameter
-    elsif respond_to?(:localize_param)
-      { id: localize_param(locale) }
-
     else
       {}
     end

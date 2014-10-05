@@ -1,9 +1,15 @@
 Changelog
 =========
 
-## master
+## v1.0.0
 
-- Localize by path (/:locale/) as well as by subdomain
+Major breaking changes:
+
+- Renamed `localize` route scope to `localize_subdomain`
+- Renamed `locale_switch_url` helper to `locale_switch_subdomain_url`
+- Localize by path `/:locale/` by using the `localize` route scope
+- Remove deprecated `localize_param` helper to that helped redefine
+  the `id` parameter
 
 ## v0.0.7
 

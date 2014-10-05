@@ -26,7 +26,10 @@ module RouteLocalize
     def locale_conditions
       cond = conditions.dup
 
-      cond[:path_info] = translated_path
+      cond[:path_info] = RouteLocalize.translated_path(
+                           conditions[:path_info],
+                           locale,
+                           by_subdomain: by_subdomain?)
 
       if by_subdomain?
         cond[:subdomain] = locale.to_s
@@ -35,7 +38,7 @@ module RouteLocalize
       end
 
       # For good measure
-      cond[:required_defaults] -= [:localize, :localize_url]
+      cond[:required_defaults] -= [:localize, :localize_subdomain]
 
       cond
     end
@@ -57,40 +60,10 @@ module RouteLocalize
       locale_as
     end
 
-    # Returns a translated path
-    # Example: "/trees/:id(.:format)" -> "/arbres/:id(.:format)", …
-    def translated_path
-      path = conditions[:path_info].dup
-
-      # Remove "(.:format)" in routes or "?args" if used elsewhere
-      final_options = path.slice!(/(\(.+\)|\?.*)$/)
-
-      segments = path.split('/').map do |segment|
-        translate_segment(segment)
-      end
-
-      segments.unshift(":locale") unless by_subdomain?
-      segments = segments.reject(&:blank?)
-
-      "/#{segments.join('/')}#{final_options}"
-    end
-
-    # Translates part of a path if it can
-    # Example: "trees" -> "arbres", ":id" -> ":id"
-    def translate_segment(segment)
-      if segment =~ /^[a-z_0-9]+$/i
-        translation = I18n.t "routes.#{segment}", default: segment,
-                                                  locale: locale
-        CGI.escape(translation)
-      else
-        segment
-      end
-    end
-
     # Returns true if the route must be by subdomain ("fr.example.com"),
     # false if it should be by path ("example.com/fr")
     def by_subdomain?
-      conditions[:required_defaults].include?(:localize)
+      conditions[:required_defaults].include?(:localize_subdomain)
     end
 
   end

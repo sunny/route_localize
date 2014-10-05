@@ -8,8 +8,8 @@ describe RouteLocalize::Route do
 
   describe '#to_add_route_arguments' do
     let(:app) { double(:app) }
-    let(:conditions) { { required_defaults: [:localize], path_info: "/bang" } }
-    let(:requirements) { [:localize] }
+    let(:conditions) { { required_defaults: [:localize_subdomain], path_info: "/bang" } }
+    let(:requirements) { [:localize_subdomain] }
     let(:defaults) { {} }
     let(:as) { "bang" }
     let(:anchor) { double(:anchor) }
@@ -43,7 +43,7 @@ describe RouteLocalize::Route do
       defaults = { locale: "fr" }
       as = "bang_fr"
 
-      route.conditions[:required_defaults] = [:localize_url]
+      route.conditions[:required_defaults] = [:localize]
       expect(route.to_add_route_arguments).to eq(
         [app, conditions, requirements, defaults, as, anchor])
     end
