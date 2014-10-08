@@ -1,7 +1,11 @@
 Dummy::Application.routes.draw do
-  get 'home', to: 'trees#home', localize: %w(en fr)
+  get 'home', to: 'trees#home', localize_subdomain: %w(en fr)
 
   scope localize: [:en, :fr] do
+    resources :leaves
+  end
+
+  scope localize_subdomain: [:en, :fr] do
     resources :trees, path_names: { new: "plant" }
 
     get "default", to: "trees#home"

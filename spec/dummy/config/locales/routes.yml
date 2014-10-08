@@ -6,6 +6,7 @@ fr:
   routes:
     home: accueil
     trees: arbres
+    leaves: feuilles
 
     plant: planter
     edit: éditer
