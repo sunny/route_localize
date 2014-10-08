@@ -9,7 +9,7 @@ describe RouteLocalize::Route do
   describe '#to_add_route_arguments' do
     let(:app) { double(:app) }
     let(:conditions) { { required_defaults: [:localize_subdomain], path_info: "/bang" } }
-    let(:requirements) { [:localize_subdomain] }
+    let(:requirements) { {} }
     let(:defaults) { {} }
     let(:as) { "bang" }
     let(:anchor) { double(:anchor) }
@@ -31,6 +31,7 @@ describe RouteLocalize::Route do
 
     it "returns a translated route by subdomain" do
       conditions = { required_defaults: [], path_info: "/boum", subdomain: "fr" }
+      requirements = { subdomain: "fr" }
       defaults = { subdomain: "fr" }
       as = "bang_fr"
 
@@ -40,6 +41,7 @@ describe RouteLocalize::Route do
 
     it "returns a translated route by url" do
       conditions = { required_defaults: [], path_info: "/:locale/boum", locale: "fr" }
+      requirements = { locale: "fr" }
       defaults = { locale: "fr" }
       as = "bang_fr"
 

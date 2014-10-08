@@ -13,7 +13,7 @@ module RouteLocalize
     def to_add_route_arguments
       [app,
         locale_conditions,
-        requirements,
+        locale_requirements,
         locale_defaults,
         locale_as,
         anchor]
@@ -41,6 +41,14 @@ module RouteLocalize
       cond[:required_defaults] -= [:localize, :localize_subdomain]
 
       cond
+    end
+
+    def locale_requirements
+      if by_subdomain?
+        { subdomain: locale.to_s }
+      else
+        { locale: locale.to_s }
+      end
     end
 
     # Return route defaults for the locale

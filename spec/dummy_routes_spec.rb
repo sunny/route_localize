@@ -71,5 +71,21 @@ describe "Dummy Routes", type: "routing" do
       locale: "fr",
       id: "42")
   end
+
+  it "does not match unknown locales in subdomain" do
+    expect(get: "http://it.example.com/trees/42").not_to route_to(
+      controller: "trees",
+      action: "show",
+      subdomain: "it",
+      id: "42")
+  end
+
+  it "does not match unknown locales in url" do
+    expect(get: "http://example.com/it/leaves/42").not_to route_to(
+      controller: "leaves",
+      action: "show",
+      locale: "it",
+      id: "42")
+  end
 end
 
