@@ -28,7 +28,7 @@ module RouteLocalize
         yield *route.to_add_route_arguments
       end
 
-      define_locale_helpers(as, route_set.named_routes.module)
+      define_locale_helpers(as, route_set.named_routes.path_helpers_module)
     else
       yield app, conditions, requirements, defaults, as, anchor
     end
