@@ -25,7 +25,15 @@ module RouteLocalize
       locales.each do |locale|
         route = Route.new(app, conditions, requirements, defaults,
                             as, anchor, route_set, locale)
-        yield *route.to_add_route_arguments
+                            
+        args = route.to_add_route_arguments
+        # Fix for Rails 4.2:
+        # Re-parse :path_info so that stays in sync
+        unless args[1][:parsed_path_info].nil?
+          args[1][:parsed_path_info] = ActionDispatch::Journey::Parser.new.parse args[1][:path_info]
+        end
+        
+        yield *args
       end
 
       define_locale_helpers(as, route_set.named_routes.path_helpers_module)
