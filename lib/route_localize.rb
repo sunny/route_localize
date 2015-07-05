@@ -35,8 +35,10 @@ module RouteLocalize
         
         yield *args
       end
-
-      define_locale_helpers(as, route_set.named_routes.path_helpers_module)
+      
+      # Method name is different in Rails 4.2+
+      mod = route_set.named_routes.respond_to?(:module) ? route_set.named_routes.module : route_set.named_routes.path_helpers_module
+      define_locale_helpers(as, mod)
     else
       yield app, conditions, requirements, defaults, as, anchor
     end
