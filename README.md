@@ -1,7 +1,10 @@
 # Route Localize
 
-Rails 4 engine to translate routes using locale files and subdomains.
+Rails engine to translate routes using locale files and subdomains.
 
+**Only works with Rails 4.0**. Check out
+[route_translator](https://github.com/enriclluelles/route_translator/) for
+Rails 4.2 and Rails 5 compatibility.
 
 ## Install
 
