@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## v1.1.0
+
+- Remove Rails version compatibility for versions other than `4.0`
+
 ## v1.0.0
 
 Major breaking changes:

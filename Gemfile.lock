@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    route_localize (1.0.0)
+    route_localize (1.1.0)
       rails (~> 4.0.3)
 
 GEM
