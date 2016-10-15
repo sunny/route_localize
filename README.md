@@ -11,6 +11,7 @@ Rails 4.2 and Rails 5 compatibility.
 In your Rails application's `Gemfile` add:
 
 ```rb
+# Rails 4.0 engine to translate the routes
 gem "route_localize"
 ```
 
